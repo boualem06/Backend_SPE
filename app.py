@@ -6,14 +6,10 @@ import matplotlib.pyplot as plt
 import numpy as np 
 from sklearn.manifold import TSNE
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-from flask_cors import CORS
 #from umap import UMAP
 
 
-
 app = Flask(__name__)
-
-CORS(app)
 
 @app.route('/PCA')
 def PcaImplementation():
@@ -38,36 +34,22 @@ def PcaImplementation():
     scaled_data = scaler.fit_transform(numeric_data)
     pca = PCA()
     pca_result = pca.fit_transform(scaled_data)
-    results_dics = []
-    for index,item in enumerate(pca_result):
-        results_dics.append({})
-        results_dics[index]['val1'] = item[0]
-        results_dics[index]['val2'] = item[1]
-        results_dics[index]['val3'] = item[2]
-
     print(pca_result)  #will be used for the scatter plot 
     print("----------------------------------------------------------------------------------------------")
     explained_variance_ratio = pca.explained_variance_ratio_ 
-    results_dics_var = []
-    for index,item in enumerate(explained_variance_ratio):
-        results_dics_var.append({})
-        results_dics_var[index]['comp'] = 'comp' + str(index)
-        results_dics_var[index]['var'] = item
-    print(results_dics_var)
-
-    # print(explained_variance_ratio)  #will be used for the bar plot of variations 
+    print(explained_variance_ratio)  #will be used for the bar plot of variations 
     print("----------------------------------------------------------------------------------------------")
     loadings = pca.components_.T * np.sqrt(pca.explained_variance_)  #this will be used for the loading plot 
     print(loadings)
 
 
     result = {
-        "pca_result": results_dics,
-        "explained_variance_ratio": results_dics_var,
+        "pca_result": pca_result.tolist(),
+        "explained_variance_ratio": explained_variance_ratio.tolist(),
         "loadings": loadings.tolist()
     }
 
-    return jsonify(result)
+    return 
 
 
 @app.route('/TSNE')
@@ -116,4 +98,4 @@ def LdaImplementation():
     return jsonify(X_lda_list)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
