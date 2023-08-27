@@ -49,7 +49,7 @@ def PcaImplementation():
         "loadings": loadings.tolist()
     }
 
-    return 
+    return jsonify(result)
 
 
 @app.route('/TSNE')
