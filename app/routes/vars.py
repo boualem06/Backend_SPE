@@ -1,7 +1,8 @@
 
 
 from flask import Blueprint
-
+import pandas as pd
+from flask import jsonify
 
 vars_bp = Blueprint('vars', __name__)
 
