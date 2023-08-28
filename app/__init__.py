@@ -15,6 +15,7 @@ from flask import Flask
 from flask_cors import CORS
 # Import the register_routes function from app/routes/__init__.py
 from .routes import register_routes
+# from ..data_utils import load_data
 
 def create_app():
     app = Flask(__name__)

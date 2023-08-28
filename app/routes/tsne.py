@@ -8,6 +8,7 @@ from sklearn.manifold import TSNE
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from flask_cors import CORS
 from flask import Blueprint
+from data_utils import load_data
 
 
 tsne_bp = Blueprint('tsne', __name__)
@@ -15,7 +16,7 @@ tsne_bp = Blueprint('tsne', __name__)
 @tsne_bp.route('/TSNE')
 def TsneImplementation():
     file_path = './data2.csv'
-    data = pd.read_csv(file_path, delimiter=';', encoding='ISO-8859-1')
+    data = load_data(file_path)
     data.drop(data.columns[40], axis=1, inplace=True)
 
     X_numeric = data[['gpslon', 'gpslat']].values

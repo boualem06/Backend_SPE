@@ -9,6 +9,8 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from flask_cors import CORS
 
 from flask import Blueprint
+from data_utils import load_data
+
 
 pca_bp = Blueprint('pca', __name__)
 
@@ -16,7 +18,7 @@ pca_bp = Blueprint('pca', __name__)
 @pca_bp.route('/PCA')
 def PcaImplementation():
     file_path = './data2.csv'
-    data = pd.read_csv(file_path, delimiter=';', encoding='ISO-8859-1')
+    data = load_data(file_path)
     data.drop(data.columns[40], axis=1, inplace=True)
 # Remove non-numeric columns like 'titre', 'description', etc.
     numeric_data = data.drop(['titre', 'description', 'archive', 'typeform', 'catform', 'deflang', 'username', 'datecreat', 'datedeb', 'datefin',

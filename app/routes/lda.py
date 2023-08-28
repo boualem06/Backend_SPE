@@ -8,13 +8,14 @@ from sklearn.manifold import TSNE
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from flask_cors import CORS
 from flask import Blueprint
+from data_utils import load_data
 
 lda_bp = Blueprint('lda', __name__)
 
 @lda_bp.route('/LDA')
 def LdaImplementation():
     file_path = './data2.csv'
-    data = pd.read_csv(file_path, delimiter=';', encoding='ISO-8859-1')
+    data = load_data(file_path)
     # Prepare the data
     X_numeric = data[['gpslon', 'gpslat']].values
 
