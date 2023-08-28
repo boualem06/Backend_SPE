@@ -12,6 +12,7 @@ from flask import Blueprint
 
 pca_bp = Blueprint('pca', __name__)
 
+
 @pca_bp.route('/PCA')
 def PcaImplementation():
     file_path = './data2.csv'
@@ -28,6 +29,7 @@ def PcaImplementation():
 
 
 # Handle missing values if needed
+
     numeric_data.fillna(0, inplace=True)
 
 # Performing PCA
