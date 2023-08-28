@@ -7,15 +7,12 @@ import numpy as np
 from sklearn.manifold import TSNE
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from flask_cors import CORS
-#from umap import UMAP
 
+from flask import Blueprint
 
+pca_bp = Blueprint('pca', __name__)
 
-app = Flask(__name__)
-
-CORS(app)
-
-@app.route('/PCA')
+@pca_bp.route('/PCA')
 def PcaImplementation():
     file_path = './data2.csv'
     data = pd.read_csv(file_path, delimiter=';', encoding='ISO-8859-1')
@@ -68,52 +65,3 @@ def PcaImplementation():
     }
 
     return jsonify(result)
-
-
-@app.route('/TSNE')
-def TsneImplementation():
-    file_path = './data2.csv'
-    data = pd.read_csv(file_path, delimiter=';', encoding='ISO-8859-1')
-    data.drop(data.columns[40], axis=1, inplace=True)
-
-    X_numeric = data[['gpslon', 'gpslat']].values
-
-# Convert categorical columns to integers
-    data['isparrain'] = data['isparrain'].astype(int)
-    data['isanonyme'] = data['isanonyme'].astype(int)
-
-# Combine categorical and numeric data
-    X_combined = pd.concat([data[['isparrain', 'isanonyme']], pd.DataFrame(X_numeric, columns=['gpslon', 'gpslat'])], axis=1)
-
-# Perform t-SNE
-    tsne = TSNE(n_components=2, perplexity=30, random_state=42)
-    X_tsne = tsne.fit_transform(X_combined)
-
-    X_tsne_list = X_tsne.tolist()
-    return jsonify(X_tsne_list)
-
-
-@app.route('/LDA')
-def LdaImplementation():
-    file_path = './data2.csv'
-    data = pd.read_csv(file_path, delimiter=';', encoding='ISO-8859-1')
-    # Prepare the data
-    X_numeric = data[['gpslon', 'gpslat']].values
-
-# Convert categorical columns to integers
-    data['isparrain'] = data['isparrain'].astype(int)
-    data['isanonyme'] = data['isanonyme'].astype(int)
-
-# Create a categorical target variable based on 'isparrain' and 'isanonyme'
-    target = data['isparrain'] + 2 * data['isanonyme']  # Assuming both are binary (0 or 1)
-
-# Perform Linear Discriminant Analysis
-    lda = LinearDiscriminantAnalysis()
-    X_lda = lda.fit_transform(X_numeric, target)
-
-    X_lda_list = X_lda.tolist()
-    print(X_lda_list)
-    return jsonify(X_lda_list)
-
-if __name__ == '__main__':
-    app.run(debug=True)
