@@ -6,6 +6,7 @@ from .tsne import tsne_bp
 from .lda import lda_bp
 from .vars import vars_bp
 from .anonymization import anonymization_bp
+from .univis import univis_bp
 # Register the blueprints and their associated views
 def register_routes(app):
     app.register_blueprint(pca_bp)
@@ -13,3 +14,4 @@ def register_routes(app):
     app.register_blueprint(lda_bp)
     app.register_blueprint(vars_bp)
     app.register_blueprint(anonymization_bp)
+    app.register_blueprint(univis_bp)
