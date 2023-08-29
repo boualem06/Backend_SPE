@@ -4,8 +4,6 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 import numpy as np 
-from sklearn.manifold import TSNE
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from flask_cors import CORS
 
 from flask import Blueprint
