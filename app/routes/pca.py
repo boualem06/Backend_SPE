@@ -6,29 +6,47 @@ import matplotlib.pyplot as plt
 import numpy as np 
 from flask_cors import CORS
 
-from flask import Blueprint
+from flask import Blueprint,request
 from data_utils import load_data
 
 
 pca_bp = Blueprint('pca', __name__)
 
 
-@pca_bp.route('/PCA')
+@pca_bp.route('/PCA',methods=['POST'])
 def PcaImplementation():
     file_path = './data2.csv'
     data = load_data(file_path)
-    data.drop(data.columns[40], axis=1, inplace=True)
-# Remove non-numeric columns like 'titre', 'description', etc.
-    numeric_data = data.drop(['titre', 'description', 'archive', 'typeform', 'catform', 'deflang', 'username', 'datecreat', 'datedeb', 'datefin',
-                          'raisonsociale', 'cliadr', 'cliville', 'enqueteur', 'daterepon', 'uidrpnd', 'adresse', 'annï¿½ï¿½', 'wilaya', 'sexe',
-                          'sitfam', 'sitprof', 'nivetude', 'profession', 'isparrain', 'isanonyme', 'emploie', 'csp', 'gpslatrepon', 'gpslonrepon',
-                          'Present sur RS', 'RS utilise', 'Raisons Utilisation RS', 'Suivre Les Marques', 'Marque Doit etre sur RS',
-                          'Top Of Mind Marque', 'Top Of Mind Marque DZ', 'Connaissance Marque Condor',
-                          'Origirne de Notorite', 'Suivre Condor sur RS', 'Presence Condor sur RS', 'Decouverte Produit Condor sur RS',
-                          'Quel Produit decouvert sur RS', 'Participation Condor Pour la marque', 'Proposition Ecrites'], axis=1)
+
+    request_data = request.get_json()  # Get the JSON data from the request
+
+    # Check if the 'columns_for_pca' key is present in the JSON data
+    if 'columns_for_pca' not in request_data:
+        return jsonify({"error": "Columns for PCA not provided"}), 400
+
+    columns_for_pca = request_data['columns_for_pca']
+
+    file_path = './data2.csv'
+    data = load_data(file_path)
+
+    # Select the specified columns and drop any non-numeric columns
+    numeric_data = data[columns_for_pca].select_dtypes(include=[np.number])
 
 
-# Handle missing values if needed
+
+
+#     data.drop(data.columns[40], axis=1, inplace=True)
+# # Remove non-numeric columns like 'titre', 'description', etc.
+#     numeric_data = data.drop(['titre', 'description', 'archive', 'typeform', 'catform', 'deflang', 'username', 'datecreat', 'datedeb', 'datefin',
+#                           'raisonsociale', 'cliadr', 'cliville', 'enqueteur', 'daterepon', 'uidrpnd', 'adresse', 'annï¿½ï¿½', 'wilaya', 'sexe',
+#                           'sitfam', 'sitprof', 'nivetude', 'profession', 'isparrain', 'isanonyme', 'emploie', 'csp', 'gpslatrepon', 'gpslonrepon',
+#                           'Present sur RS', 'RS utilise', 'Raisons Utilisation RS', 'Suivre Les Marques', 'Marque Doit etre sur RS',
+#                           'Top Of Mind Marque', 'Top Of Mind Marque DZ', 'Connaissance Marque Condor',
+#                           'Origirne de Notorite', 'Suivre Condor sur RS', 'Presence Condor sur RS', 'Decouverte Produit Condor sur RS',
+#                           'Quel Produit decouvert sur RS', 'Participation Condor Pour la marque', 'Proposition Ecrites'], axis=1)
+
+
+# # Handle missing values if needed
 
     numeric_data.fillna(0, inplace=True)
 
@@ -42,7 +60,7 @@ def PcaImplementation():
         results_dics.append({})
         results_dics[index]['val1'] = item[0]
         results_dics[index]['val2'] = item[1]
-        results_dics[index]['val3'] = item[2]
+        # results_dics[index]['val3'] = item[2]
 
     print(pca_result)  #will be used for the scatter plot 
     print("----------------------------------------------------------------------------------------------")
