@@ -60,7 +60,8 @@ def LdaImplementation():
     file_path = './data2.csv'
     data = load_data(file_path)
     # For this example, let's assume you have a 'data' DataFrame loaded
-    
+     # Drop rows with null targets
+    data = data.dropna(subset=target_columns)
     # Convert column names to lowercase
     # features_columns = [col.lower() for col in features_columns]
     # target_columns = [col.lower() for col in target_columns]
