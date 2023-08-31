@@ -111,8 +111,18 @@ def LdaImplementation():
         lda = LinearDiscriminantAnalysis()
         X_lda = lda.fit_transform(final_features_imputed, target_labels)
 
-        X_lda_list = X_lda.tolist()
-        lda_results[target_col] = X_lda_list
+        # X_lda_list = X_lda.tolist()
+        # lda_results[target_col] = X_lda_list
+         # Create a list of dictionaries for each component
+        component_dicts = []
+        for row in X_lda:
+            component_dict = {}
+            for i, val in enumerate(row):
+                component_dict[f'val{i + 1}'] = val
+            component_dicts.append(component_dict)
+
+        lda_results[target_col] = component_dicts
 
     return jsonify(lda_results)
+
 
