@@ -40,9 +40,11 @@ def TsneImplementation():
     X_tsne = tsne.fit_transform(selected_data)
     
     # Convert t-SNE results to a list for JSON serialization
-    X_tsne_list = X_tsne.tolist()
+    result_list = []
+    for point in X_tsne:
+        result_list.append({"val1": float(point[0]), "val2": float(point[1])})  # Convert to Python float
     
-    return jsonify(X_tsne_list)
+    return jsonify(result_list)
 
 
 
