@@ -79,6 +79,7 @@ def sum_similar_words(plt_count,arra_sim):  #these function allows sum the value
         final_dic={}
         temp_dict={}
         final_dic["column_name"]=column_name 
+        final_dic["values"]=[]
         temp_dict["column_name"]=column_name 
         #print(column_name)
         for word, count in response_counts.items():
@@ -94,7 +95,7 @@ def sum_similar_words(plt_count,arra_sim):  #these function allows sum the value
             if(list_similaire_words)    :
                 word_heighest_sim=highest_sim_word(list_similaire_words)
                 #print(word_heighest_sim)
-                final_dic[word_heighest_sim]=count
+                final_dic["values"].append({column_name:word_heighest_sim,"value":count})
                 temp_dict[word_heighest_sim]=list_similaire_words
         #     #print(word)
         # #print(word_heighest_sim)
