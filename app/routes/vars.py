@@ -14,8 +14,8 @@ def get_vars():
     file_path = './data2.csv'
     data = pd.read_csv(file_path, delimiter=';', encoding='ISO-8859-1')
     data = data.drop(data.iloc[:, 0:13], axis=1)
-    data.rename({'annï¿½ï¿½': 'AnneeDeNaissance'},
-                axis=1,  inplace=True, errors='raise')
+    # data.rename({'annï¿½ï¿½': 'AnneeDeNaissance'},
+    #             axis=1,  inplace=True, errors='raise')
     print(data.columns.tolist())
     root_folder = os.getcwd()  # Get the current working directory as the root folder
     csv_data = []
@@ -41,17 +41,15 @@ def get_vars():
     return jsonify(response_data)
 
 
-@vars_bp.route('/download', methods=['POST'])
+@vars_bp.route('/download', methods=['GET'])
 def download():
+    # Get parameters from the query string
+    data_type = request.args.get('data_type')
+    original_filename = request.args.get('original_filename')
 
-    data_type = request.json['data_type']  # Get the selected data type (json or csv)
-    original_filename = request.json['original_filename']  # Get the original CSV filename
-
-    print(data_type)
-
-    if data_type not in ('json', 'csv') or not original_filename:
-        return "Invalid request."
-    file_path = './data2.csv'
+    # Check if parameters are valid
+    if not (data_type in ['json', 'csv'] and original_filename):
+        return 'Invalid parameters', 400
 
     data = pd.read_csv(original_filename, delimiter=';', encoding='ISO-8859-1')
     data = data.drop(data.iloc[:, 0:13], axis=1)
@@ -75,6 +73,7 @@ def download():
 
     return response
 
+
 @vars_bp.route('/filesList', methods=['GET'])
 def filesList():
     root_folder = os.getcwd()  # Get the current working directory as the root folder
@@ -83,12 +82,17 @@ def filesList():
 
     for filename in os.listdir(root_folder):
         if filename.endswith('.csv'):
+            data_info = {}
             file_path = os.path.join(root_folder, filename)
             data = pd.read_csv(file_path, delimiter=';', encoding='ISO-8859-1')
-            data = data.drop(data.iloc[:, 13:], axis=1)         
+            # data = data.drop(data.iloc[:, 13:], axis=1)        
+            data_info['titre'] = data.loc[0,'titre']
+            data_info['date'] = data.loc[0,'datecreat']
+            data_info['user'] = data.loc[0,'username']
+
             csv_data.append({
                 'filename': filename,
-                'data': data.to_json()
+                'data': data_info
             })
 
     return jsonify(csv_data)
