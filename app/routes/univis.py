@@ -203,7 +203,7 @@ def visualize_data():
 
         arra_sim=calculating_similarities(all_response_data)
         result,temp_array = sum_similar_words(all_response_data, arra_sim)
-        return jsonify(temp_array)
+        return jsonify(result)
 
     except Exception as e:
         return jsonify({"error": str(e)})
