@@ -1,69 +1,15 @@
-# import pandas as pd
-# from flask import Flask, request, jsonify
-
-# from flask import Blueprint
-# from data_utils import load_data
-
-
-# univis_bp = Blueprint('univis', __name__)
-
-
-
-# @univis_bp.route('/univis', methods=['POST'])
-# def visualize_data():
-#     try:
-#         file_path = "data2.csv"  # Replace with your actual file path
-#         df = load_data(file_path)
-        
-#         column_names = request.json['column_names']  # List of column names
-
-#         all_response_data = []
-
-#         for column_name in column_names:
-#             # Extract unique responses from the specified column
-#             unique_responses = df[column_name].unique()
-
-#             # Remove 'null' and NaN values from the unique_responses list
-#             unique_responses = [response for response in unique_responses if pd.notna(response) and response != 'null']
-
-#             # Create a dictionary to store response frequencies
-#             response_counts = {response: 0 for response in unique_responses}
-
-#             # Count the occurrences of each response
-#             for response in df[column_name]:
-#                 if pd.notna(response) and response != 'null':
-#                     response_counts[response] += 1
-
-#             response_data = {
-#                 "column_name": column_name,
-#                 "response_counts": response_counts
-#             }
-#             all_response_data.append(response_data)
-
-#         return jsonify(all_response_data)
-
-#     except Exception as e:
-#         return jsonify({"error": str(e)})
-
-
 import pandas as pd
-from flask import Flask, request, jsonify
-
-from flask import Blueprint
-from data_utils import load_data
+import matplotlib.pyplot as plt
+from flask import Flask, request, jsonify,Blueprint
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 
 
-univis_bp = Blueprint('univis', __name__)
+from data_utils import load_data
 
+multivis_final_res_bp = Blueprint('multivis_final_res', __name__)
 
-
-
-
-
-
-
+var="hello"
 
 def levenshtein_distance(word1, word2):
     if len(word1) < len(word2):
@@ -92,7 +38,7 @@ def highest_sim_word(word_list): #these function allows us to calculate the word
 
 def calculating_similarities(data): #these function allows us to calculate the similaire words 
     
-    threshold = 90  # Adjust the threshold as needed
+    threshold = 70  # Adjust the threshold as needed
 
     similar_words_data = []
 
@@ -112,6 +58,7 @@ def calculating_similarities(data): #these function allows us to calculate the s
 
 
 # ********************************************************************************
+
 def sum_similar_words(plt_count,arra_sim):  #these function allows sum the values of similaire words together and take only the word theat have the max of similarities in these words
     final_res=[]
     arr_word_sim=[]
@@ -160,53 +107,68 @@ def sum_similar_words(plt_count,arra_sim):  #these function allows sum the value
     return (final_res,temp_array)
 
 
-@univis_bp.route('/univis', methods=['POST'])
-def visualize_data():
+
+@multivis_final_res_bp.route('/multivis_final_res', methods=['POST'])
+def visualize_data_and_plot():
     try:
         file_path = "data2.csv"  # Replace with your actual file path
-        df = load_data(file_path)
+        df = pd.read_csv(file_path, delimiter=';', encoding='ISO-8859-1')
 
-        column_names = request.json['column_names']  # List of column names
+        column_names = request.json['column_names']
+        data_temp=request.json['data_temp']
 
+        print(data_temp)
         all_response_data = []
 
         for column_name in column_names:
-            # Extract unique responses from the specified column
-            unique_responses = df[column_name].unique()
+            # Get the correct column name using the df.columns attribute
+            desired_column_name = column_name
+            actual_column_name = [col for col in df.columns if desired_column_name.lower() in col.lower()][0]
 
-            # Remove 'null' and NaN values from the unique_responses list
-            unique_responses = [response for response in unique_responses if pd.notna(response) and response != 'null']
+            # Extract unique responses from the desired column
+            all_responses = []
 
-            # Remove commas and empty responses from the possible responses
-            cleaned_responses = []
-            for response in unique_responses:
-                if isinstance(response, str):  # Check if the response is a string
-                    cleaned_response = response.replace(',', '').strip()
-                    if cleaned_response != "":
-                        cleaned_responses.append(cleaned_response)
+            # Iterate through each entry and split multiple responses
+            for entry in df[actual_column_name]:
+                responses = entry.split(',')
+                all_responses.extend([response.lower().strip() for response in responses if response.strip() != ""])
 
-            # Create a dictionary to store response frequencies
-            response_counts = {response: 0 for response in cleaned_responses}
+            # Convert the list of responses into a Series
+            response_series = pd.Series(all_responses)
 
             # Count the occurrences of each response
-            for response in df[column_name]:
-                if isinstance(response, str):
-                    cleaned_response = response.replace(',', '').strip()
-                    if pd.notna(cleaned_response) and cleaned_response != "":
-                        response_counts[cleaned_response] += 1
+            response_counts = response_series.value_counts()
+
+            # Convert response_counts to a dictionary for JSON serialization
+            response_counts_dict = response_counts.to_dict()
 
             response_data = {
                 "column_name": column_name,
-                "response_counts": response_counts
+                "response_counts": response_counts_dict
             }
             all_response_data.append(response_data)
 
         arra_sim=calculating_similarities(all_response_data)
         result,temp_array = sum_similar_words(all_response_data, arra_sim)
-        return jsonify(temp_array)
+        
+        final_resss=[]
+        for index,dic in enumerate(result) :
+            dicc={}
+            dicc['column_name']=dic["column_name"]
+            for key,value in dic.items():
+        #dic[key]=temp_array[index][key]
+                if dicc.get((data_temp[index][key])) is not None:
+                    dicc[(data_temp[index][key])]=dicc[(data_temp[index][key])]+value
+                else:
+                    dicc[(data_temp[index][key])]=value
+            final_resss.append(dicc)
+
+        
+        return jsonify(final_resss)
 
     except Exception as e:
         return jsonify({"error": str(e)})
 
+    
 
 

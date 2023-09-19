@@ -9,6 +9,8 @@ from data_utils import load_data
 
 multivis_bp = Blueprint('multivis', __name__)
 
+var="hello"
+
 def levenshtein_distance(word1, word2):
     if len(word1) < len(word2):
         return levenshtein_distance(word2, word1)
@@ -60,6 +62,7 @@ def calculating_similarities(data): #these function allows us to calculate the s
 def sum_similar_words(plt_count,arra_sim):  #these function allows sum the values of similaire words together and take only the word theat have the max of similarities in these words
     final_res=[]
     arr_word_sim=[]
+    temp_array=[]
     for index, elem in enumerate(plt_count):
         arr_word_sim=[]
         column_name=elem["column_name"]
@@ -74,8 +77,10 @@ def sum_similar_words(plt_count,arra_sim):  #these function allows sum the value
                 elem_arra_sim=d
                 break
         final_dic={}
+        temp_dict={}
         final_dic["column_name"]=column_name 
-        print(column_name)
+        temp_dict["column_name"]=column_name 
+        #print(column_name)
         for word, count in response_counts.items():
             list_similaire_words=elem_arra_sim["response_counts"][word]
             list_similaire_words.append(word)
@@ -88,17 +93,18 @@ def sum_similar_words(plt_count,arra_sim):  #these function allows sum the value
                     arr_word_sim.append(word_sim)
             if(list_similaire_words)    :
                 word_heighest_sim=highest_sim_word(list_similaire_words)
-                print(word_heighest_sim)
+                #print(word_heighest_sim)
                 final_dic[word_heighest_sim]=count
-       
-        #     print(word)
+                temp_dict[word_heighest_sim]=list_similaire_words
+        #     #print(word)
         # #print(word_heighest_sim)
         #     print(list_similaire_words)
         #     print("====================================================")
         
         
         final_res.append(final_dic)
-    return (final_res)
+        temp_array.append(temp_dict)
+    return (final_res,temp_array)
 
 @multivis_bp.route('/multivis', methods=['POST'])
 def visualize_data_and_plot():
@@ -139,8 +145,8 @@ def visualize_data_and_plot():
             all_response_data.append(response_data)
 
         arra_sim=calculating_similarities(all_response_data)
-        result = sum_similar_words(all_response_data, arra_sim)
-        return jsonify(result)
+        result,temp_array = sum_similar_words(all_response_data, arra_sim)
+        return jsonify(temp_array)
 
     except Exception as e:
         return jsonify({"error": str(e)})
