@@ -1,41 +1,3 @@
-# from flask import Flask,jsonify
-# import pandas as pd
-# from sklearn.decomposition import PCA
-# from sklearn.preprocessing import StandardScaler
-# import matplotlib.pyplot as plt
-# import numpy as np 
-# from sklearn.manifold import TSNE
-# from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-# from flask_cors import CORS
-# from flask import Blueprint,request
-# from data_utils import load_data
-
-# lda_bp = Blueprint('lda', __name__)
-
-# @lda_bp.route('/LDA')
-# def LdaImplementation():
-#     file_path = './data2.csv'
-#     data = load_data(file_path)
-
-   
-#     # Prepare the data
-#     X_numeric = data[['gpslon', 'gpslat']].values
-
-# # Convert categorical columns to integers
-#     data['isparrain'] = data['isparrain'].astype(int)
-#     data['isanonyme'] = data['isanonyme'].astype(int)
-
-# # Create a categorical target variable based on 'isparrain' and 'isanonyme'
-#     target = data['isparrain'] + 2 * data['isanonyme']  # Assuming both are binary (0 or 1)
-
-# # Perform Linear Discriminant Analysis
-#     lda = LinearDiscriminantAnalysis()
-#     X_lda = lda.fit_transform(X_numeric, target)
-
-#     X_lda_list = X_lda.tolist()
-#     print(X_lda_list)
-#     return jsonify(X_lda_list)
-
 
 from flask import Flask, jsonify, request
 import pandas as pd
@@ -51,20 +13,18 @@ lda_bp = Blueprint('lda', __name__)
 
 @lda_bp.route('/LDA', methods=['POST'])
 def LdaImplementation():
-    # Get the data from the request
+    
     request_data = request.json
-    features_columns = request_data['features']  # Feature column names
-    target_columns = request_data['target']       # Target column names
+    features_columns = request_data['features']  
+    target_columns = request_data['target']       
 
-    # Load your data into a DataFrame (replace this with your data loading method)
+   
     file_path = './data2.csv'
     data = load_data(file_path)
-    # For this example, let's assume you have a 'data' DataFrame loaded
+    
      # Drop rows with null targets
     data = data.dropna(subset=target_columns)
-    # Convert column names to lowercase
-    # features_columns = [col.lower() for col in features_columns]
-    # target_columns = [col.lower() for col in target_columns]
+   
 
     # Convert content of each row in features columns to lowercase
     data[features_columns] = data[features_columns].applymap(lambda x: x.lower() if isinstance(x, str) else x)
@@ -82,8 +42,7 @@ def LdaImplementation():
     numerical_features = features_df.select_dtypes(exclude=['object'])
 
     
-    # onehot_encoder = OneHotEncoder()
-    # encoded_categorical_features = onehot_encoder.fit_transform(categorical_features).toarray()
+    
 
     # Encode categorical features using get_dummies
     encoded_categorical_features = pd.get_dummies(features_df, columns=categorical_features.columns)
@@ -91,8 +50,7 @@ def LdaImplementation():
     # Combine the encoded features and numerical features
     final_features = pd.concat([encoded_categorical_features, numerical_features], axis=1)
 
-    # Combine the encoded features and numerical features
-    # final_features = pd.concat([pd.DataFrame(encoded_categorical_features), numerical_features], axis=1)
+   
 
     # Preprocess the data to handle missing values using SimpleImputer
     imputer = SimpleImputer(strategy='mean')
@@ -112,9 +70,7 @@ def LdaImplementation():
         lda = LinearDiscriminantAnalysis()
         X_lda = lda.fit_transform(final_features_imputed, target_labels)
 
-        # X_lda_list = X_lda.tolist()
-        # lda_results[target_col] = X_lda_list
-         # Create a list of dictionaries for each component
+       
         component_dicts = []
         for row in X_lda:
             component_dict = {}

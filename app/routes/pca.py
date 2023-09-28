@@ -18,7 +18,7 @@ def PcaImplementation():
     file_path = './data2.csv'
     data = load_data(file_path)
 
-    request_data = request.get_json()  # Get the JSON data from the request
+    request_data = request.get_json()  
 
     # Check if the 'columns_for_pca' key is present in the JSON data
     if 'columns_for_pca' not in request_data:
@@ -35,18 +35,8 @@ def PcaImplementation():
 
 
 
-#     data.drop(data.columns[40], axis=1, inplace=True)
-# # Remove non-numeric columns like 'titre', 'description', etc.
-#     numeric_data = data.drop(['titre', 'description', 'archive', 'typeform', 'catform', 'deflang', 'username', 'datecreat', 'datedeb', 'datefin',
-#                           'raisonsociale', 'cliadr', 'cliville', 'enqueteur', 'daterepon', 'uidrpnd', 'adresse', 'annï¿½ï¿½', 'wilaya', 'sexe',
-#                           'sitfam', 'sitprof', 'nivetude', 'profession', 'isparrain', 'isanonyme', 'emploie', 'csp', 'gpslatrepon', 'gpslonrepon',
-#                           'Present sur RS', 'RS utilise', 'Raisons Utilisation RS', 'Suivre Les Marques', 'Marque Doit etre sur RS',
-#                           'Top Of Mind Marque', 'Top Of Mind Marque DZ', 'Connaissance Marque Condor',
-#                           'Origirne de Notorite', 'Suivre Condor sur RS', 'Presence Condor sur RS', 'Decouverte Produit Condor sur RS',
-#                           'Quel Produit decouvert sur RS', 'Participation Condor Pour la marque', 'Proposition Ecrites'], axis=1)
 
-
-# # Handle missing values if needed
+# # Handle missing values 
 
     numeric_data.fillna(0, inplace=True)
 
@@ -60,22 +50,16 @@ def PcaImplementation():
         results_dics.append({})
         results_dics[index]['val1'] = item[0]
         results_dics[index]['val2'] = item[1]
-        # results_dics[index]['val3'] = item[2]
+        
 
-    print(pca_result)  #will be used for the scatter plot 
-    print("----------------------------------------------------------------------------------------------")
     explained_variance_ratio = pca.explained_variance_ratio_ 
     results_dics_var = []
     for index,item in enumerate(explained_variance_ratio):
         results_dics_var.append({})
         results_dics_var[index]['comp'] = 'comp' + str(index)
         results_dics_var[index]['var'] = item
-    print(results_dics_var)
 
-    # print(explained_variance_ratio)  #will be used for the bar plot of variations 
-    print("----------------------------------------------------------------------------------------------")
     loadings = pca.components_.T * np.sqrt(pca.explained_variance_)  #this will be used for the loading plot 
-    print(loadings)
 
 
     result = {

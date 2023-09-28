@@ -10,14 +10,14 @@ tsne_bp = Blueprint('tsne', __name__)
 
 @tsne_bp.route('/TSNE', methods=['POST'])
 def TsneImplementation():
-    # Get JSON data from the request
+    
     request_data = request.json
     
-    # Load data from CSV file
+    
     file_path = './data2.csv'
     data = load_data(file_path)
     
-    # Get selected column names from the request
+    
     selected_columns = request_data['columns']
     
     # Filter out non-numeric columns
@@ -27,9 +27,6 @@ def TsneImplementation():
         return jsonify({'error': 'No valid numeric columns selected'})
     
     # Extract the selected numeric columns from the data
-    print("*****************************************************")
-    print(numeric_columns)
-    print("*****************************************************")
     selected_data = data[numeric_columns]
     
     # Remove rows with null values

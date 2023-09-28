@@ -1,49 +1,4 @@
-# import pandas as pd
-# from flask import Flask, request, jsonify
 
-# from flask import Blueprint
-# from data_utils import load_data
-
-
-# univis_bp = Blueprint('univis', __name__)
-
-
-
-# @univis_bp.route('/univis', methods=['POST'])
-# def visualize_data():
-#     try:
-#         file_path = "data2.csv"  # Replace with your actual file path
-#         df = load_data(file_path)
-        
-#         column_names = request.json['column_names']  # List of column names
-
-#         all_response_data = []
-
-#         for column_name in column_names:
-#             # Extract unique responses from the specified column
-#             unique_responses = df[column_name].unique()
-
-#             # Remove 'null' and NaN values from the unique_responses list
-#             unique_responses = [response for response in unique_responses if pd.notna(response) and response != 'null']
-
-#             # Create a dictionary to store response frequencies
-#             response_counts = {response: 0 for response in unique_responses}
-
-#             # Count the occurrences of each response
-#             for response in df[column_name]:
-#                 if pd.notna(response) and response != 'null':
-#                     response_counts[response] += 1
-
-#             response_data = {
-#                 "column_name": column_name,
-#                 "response_counts": response_counts
-#             }
-#             all_response_data.append(response_data)
-
-#         return jsonify(all_response_data)
-
-#     except Exception as e:
-#         return jsonify({"error": str(e)})
 
 
 import pandas as pd
@@ -56,12 +11,6 @@ from fuzzywuzzy import process
 
 
 univis_bp = Blueprint('univis', __name__)
-
-
-
-
-
-
 
 
 
@@ -134,12 +83,12 @@ def sum_similar_words(plt_count,arra_sim):  #these function allows sum the value
         final_dic["column_name"]=column_name 
         final_dic["values"]=[]
         temp_dict["column_name"]=column_name 
-        #print(column_name)
+       
         for word, count in response_counts.items():
             list_similaire_words=elem_arra_sim["response_counts"][word]
             list_similaire_words.append(word)
             list_similaire_words=[w for w in list_similaire_words if w not in arr_word_sim]
-        #list_similaire_words=sorted(list_similaire_words)
+       
             count=0
             for word_sim in list_similaire_words:
                 if word_sim in response_counts :
@@ -147,13 +96,10 @@ def sum_similar_words(plt_count,arra_sim):  #these function allows sum the value
                     arr_word_sim.append(word_sim)
             if(list_similaire_words)    :
                 word_heighest_sim=highest_sim_word(list_similaire_words)
-                #print(word_heighest_sim)
+                
                 final_dic["values"].append({column_name:word_heighest_sim,"value":count})
                 temp_dict[word_heighest_sim]=list_similaire_words
-        #     #print(word)
-        # #print(word_heighest_sim)
-        #     print(list_similaire_words)
-        #     print("====================================================")
+      
         
         
         final_res.append(final_dic)
@@ -164,10 +110,10 @@ def sum_similar_words(plt_count,arra_sim):  #these function allows sum the value
 @univis_bp.route('/univis', methods=['POST'])
 def visualize_data():
     try:
-        file_path = "data2.csv"  # Replace with your actual file path
+        file_path = "data2.csv"  
         df = load_data(file_path)
 
-        column_names = request.json['column_names']  # List of column names
+        column_names = request.json['column_names']  
 
         all_response_data = []
 
