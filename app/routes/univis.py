@@ -138,9 +138,12 @@ def visualize_data():
                 
 
             # Create a dictionary to store response frequencies
-            response_counts = {str(response): 0 for response in cleaned_responses}
-
+            if (isinstance(cleaned_responses[0],str)):
+                response_counts = {response: 0 for response in cleaned_responses}
+            elif (isinstance(cleaned_responses[0],float)):
+                response_counts={}
             # Count the occurrences of each response
+            cn=0
             for response in df[column_name]:
                 if isinstance(response, str)  :
                     cleaned_response = response.replace(',', '').strip()
@@ -148,7 +151,8 @@ def visualize_data():
                         response_counts[cleaned_response] += 1
                 elif(isinstance(response, float) ):
                      if pd.notna(response):
-                        response_counts[str(response)] += 1
+                        response_counts[str(cn)] =response
+                        cn=cn+1
                
 
 
