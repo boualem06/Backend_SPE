@@ -110,8 +110,10 @@ def sum_similar_words(plt_count,arra_sim):  #these function allows sum the value
 @univis_bp.route('/univis', methods=['POST'])
 def visualize_data():
     try:
-        file_path = "data2.csv"  
-        df = load_data(file_path)
+        # file_path = "data2.csv"  
+        file_path = request.json["original_filename"]
+        df = pd.read_csv("./files/" + file_path, delimiter=";", encoding="ISO-8859-1")
+        #df = load_data(file_path)
 
         column_names = request.json['column_names']  
 
@@ -141,6 +143,7 @@ def visualize_data():
                     cleaned_response = response.replace(',', '').strip()
                     if pd.notna(cleaned_response) and cleaned_response != "":
                         response_counts[cleaned_response] += 1
+                
 
             response_data = {
                 "column_name": column_name,
