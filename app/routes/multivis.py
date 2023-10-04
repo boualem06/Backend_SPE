@@ -53,7 +53,8 @@ def calculating_similarities(data): #these function allows us to calculate the s
 
         similar_words_data.append({"column_name":column_name,
                                   "response_counts":similar_words})
-
+                            
+    # print(similar_words_data)
     return (similar_words_data)
 
 
@@ -63,6 +64,7 @@ def sum_similar_words(plt_count,arra_sim):  #these function allows sum the value
     final_res=[]
     arr_word_sim=[]
     temp_array=[]
+    simmm=[]
     for index, elem in enumerate(plt_count):
         arr_word_sim=[]
         column_name=elem["column_name"]
@@ -94,12 +96,12 @@ def sum_similar_words(plt_count,arra_sim):  #these function allows sum the value
                     arr_word_sim.append(word_sim)
             if(list_similaire_words)    :
                 word_heighest_sim=highest_sim_word(list_similaire_words)
-              
+                simmm.append({word_heighest_sim:list_similaire_words})
                 final_dic["values"].append({column_name:word_heighest_sim,"value":count})
                 temp_dict[word_heighest_sim]=list_similaire_words
        
         
-        
+        print(simmm)
         final_res.append(final_dic)
         temp_array.append(temp_dict)
     return (final_res,temp_array)
