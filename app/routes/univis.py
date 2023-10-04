@@ -129,21 +129,28 @@ def visualize_data():
             # Remove commas and empty responses from the possible responses
             cleaned_responses = []
             for response in unique_responses:
-                if isinstance(response, str):  # Check if the response is a string
+                if isinstance(response, str) :  # Check if the response is a string
                     cleaned_response = response.replace(',', '').strip()
                     if cleaned_response != "":
                         cleaned_responses.append(cleaned_response)
+                if isinstance(response,float):
+                    cleaned_responses.append(response)
+                
 
             # Create a dictionary to store response frequencies
-            response_counts = {response: 0 for response in cleaned_responses}
+            response_counts = {str(response): 0 for response in cleaned_responses}
 
             # Count the occurrences of each response
             for response in df[column_name]:
-                if isinstance(response, str):
+                if isinstance(response, str)  :
                     cleaned_response = response.replace(',', '').strip()
                     if pd.notna(cleaned_response) and cleaned_response != "":
                         response_counts[cleaned_response] += 1
-                
+                elif(isinstance(response, float) ):
+                     if pd.notna(response):
+                        response_counts[str(response)] += 1
+               
+
 
             response_data = {
                 "column_name": column_name,
