@@ -11,7 +11,7 @@ vars_bp = Blueprint("vars", __name__)
 @vars_bp.route("/vars")
 def get_vars():
     file_path = request.args.get("file")
-    data = pd.read_csv(file_path, delimiter=";", encoding="ISO-8859-1")
+    data = pd.read_csv("files/" + file_path, delimiter=";", encoding="ISO-8859-1")
     data = data.drop(data.iloc[:, 0:13], axis=1)
     # data.rename({'annï¿½ï¿½': 'AnneeDeNaissance'},
     #             axis=1,  inplace=True, errors='raise')
@@ -74,10 +74,10 @@ def filesList():
     csv_files = [f for f in os.listdir(root_folder + "/files") if f.endswith(".csv")]
     csv_data = []
 
-    for filename in os.listdir(root_folder):
+    for filename in os.listdir(root_folder + "/files/"):
         if filename.endswith(".csv"):
             data_info = {}
-            file_path = os.path.join(root_folder, filename)
+            file_path = os.path.join(root_folder + "/files/", filename)
             data = pd.read_csv(file_path, delimiter=";", encoding="ISO-8859-1")
             # data = data.drop(data.iloc[:, 13:], axis=1)
             data_info["titre"] = data.loc[0, "titre"]
