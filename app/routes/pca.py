@@ -15,11 +15,8 @@ pca_bp = Blueprint("pca", __name__)
 
 @pca_bp.route("/PCA", methods=["POST"])
 def PcaImplementation():
-    
-    
-
     file_path = request.json["original_filename"]
-    data = pd.read_csv("./files/" + file_path, delimiter=";", encoding="ISO-8859-1")
+    # data = pd.read_csv("./files/" + file_path, delimiter=";", encoding="ISO-8859-1")
 
     request_data = request.get_json()
 
@@ -29,7 +26,7 @@ def PcaImplementation():
 
     columns_for_pca = request_data["columns_for_pca"]
 
-    file_path = "./output.csv"
+    # file_path = "./output.csv"
     data = load_data(file_path)
 
     # Select the specified columns and drop any non-numeric columns
