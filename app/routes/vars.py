@@ -12,7 +12,6 @@ vars_bp = Blueprint("vars", __name__)
 def get_vars():
     file_path = request.args.get("file")
     data = pd.read_csv("files/" + file_path, delimiter=";", encoding="ISO-8859-1")
-    data = data.drop(data.iloc[:, 0:13], axis=1)
     # data.rename({'annï¿½ï¿½': 'AnneeDeNaissance'},
     #             axis=1,  inplace=True, errors='raise')
     print(data.columns.tolist())
