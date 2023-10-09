@@ -14,9 +14,11 @@ def TsneImplementation():
     request_data = request.json
     
     
-    file_path = './data2.csv'
-    data = load_data(file_path)
+    # file_path = './data2.csv'
+    # data = load_data(file_path)
     
+    file_path = request.json["original_filename"]
+    data = pd.read_csv("./files/" + file_path, delimiter=";", encoding="ISO-8859-1")
     
     selected_columns = request_data['columns']
     
