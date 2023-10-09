@@ -15,8 +15,11 @@ pca_bp = Blueprint("pca", __name__)
 
 @pca_bp.route("/PCA", methods=["POST"])
 def PcaImplementation():
-    # file_path = "./data2.csv"
-    # data = load_data(file_path)
+    
+    
+
+    file_path = request.json["original_filename"]
+    data = pd.read_csv("./files/" + file_path, delimiter=";", encoding="ISO-8859-1")
 
     request_data = request.get_json()
 
