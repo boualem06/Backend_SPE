@@ -22,13 +22,5 @@ The web application facilitates data processing and visualization, providing use
 - Node.js and npm for the frontend (Next.js)
 - Python 3 and Flask for the backend
 - Install required Python libraries (Flask, spaCy, NLTK, etc.)
-# Setup
-Clone the repository:
-
-# bash
-Copier le code
-git clone <repository-url>
-cd <repository-name>
-Frontend (Next.js):
 
 
